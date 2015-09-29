@@ -1,0 +1,19 @@
+language: ruby
+script: rake ci
+rvm:
+  - ruby-head
+  - 2.2.3
+  - 2.1.5 # developing here, for now
+  - jruby-9.0.0.0
+  - jruby-1.7.20
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+  fast_finish: true
+env:
+  global:
+    - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+notifications:
+  email:
+    - ndushay@stanford.edu
+sudo: false
