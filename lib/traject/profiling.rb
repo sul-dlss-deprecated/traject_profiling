@@ -1,7 +1,8 @@
 require "traject/profiling/version"
+require "traject/profiling/field_macros"
 
 module Traject
   class Profiling
-    # Your code goes here...
+
   end
 end

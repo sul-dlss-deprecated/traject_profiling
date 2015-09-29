@@ -6,20 +6,20 @@ This code is meant to be used with [traject](http://github.com/traject/traject) 
 
 ## Usage
 
-### A sample traject configuration file
+### A sample traject configuration file using macros from traect_profiling
 
 ```ruby
 require 'traject'
 require 'traject/profiling'
 extend Traject::Profiling::Macros
 
-to_field 'id', extract_marc('001', :first=>true)
-to_field 'f100count', profile_tag_count('100')
-to_field 'f100ind1', profile_ind('100', '1')
-to_field 'f100ind2', profile_ind('100', '2')
-to_field 'f100subflds', profile_subfields('100')
-to_field 'f880_for', profile_880_tags
-to_field 'f880_for', profile_880_tags_and_subfields
+to_field 'id',          extract_marc('001', :first=>true)
+to_field 'f700count',   field_count('700')
+to_field 'f700ind1',    field_ind_vals('700', '1')
+to_field 'f700ind2',    field_ind_vals('700', '2')
+to_field 'f700subflds', field_subfield_codes('700')
+to_field 'f880_for',    f880_tags
+to_field 'f880_for',    f880_tags_and_subfields
 
 ```
 
