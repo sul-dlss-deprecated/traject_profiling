@@ -9,6 +9,8 @@ rvm:
 matrix:
   allow_failures:
     - rvm: ruby-head
+    - rvm: jruby-9.0.0.0 # pry-byebug (interactive debugging gem) doesn't load for jruby
+    - rvm: jruby-1.7.20  # pry-byebug doesn't load for jruby
   fast_finish: true
 env:
   global:
