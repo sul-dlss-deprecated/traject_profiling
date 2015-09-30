@@ -14,7 +14,7 @@ RSpec.describe 'field_macros' do
       marcxml_str =
         '<record xmlns="http://www.loc.gov/MARC21/slim">
             <leader>01052cam a2200313 i 4500</leader>
-            <controlfield tag="001">245a</controlfield>
+            <controlfield tag="001">field_count</controlfield>
             <controlfield tag="008">140604t20152015enk      b    001 0 eng d</controlfield>
             <datafield ind1="1" ind2="0" tag="245">
               <subfield code="a">Slippery noodles</subfield>
@@ -28,29 +28,138 @@ RSpec.describe 'field_macros' do
           </record>'
       parse_marc(marcxml_str)
     }
-
     it 'single occurrence of tag' do
       indexer.instance_eval do
-        to_field '245count', field_count('245')
+        to_field 'f245count', field_count('245')
       end
-      output = indexer.map_record(record)
-      expect(output['245count']).to eq ['1']
+      expect(indexer.map_record(record)['f245count']).to eq ['1']
     end
     it 'mult occurrences of tag' do
       indexer.instance_eval do
-        to_field '700count', field_count('700')
+        to_field 'f700count', field_count('700')
       end
-      output = indexer.map_record(record)
-      expect(output['700count']).to eq ['2']
+      expect(indexer.map_record(record)['f700count']).to eq ['2']
     end
     it 'no occurrences of tag: field not in output_hash' do
       indexer.instance_eval do
-        to_field '100count', field_count('100')
+        to_field 'f100count', field_count('100')
       end
-      output = indexer.map_record(record)
-      expect(output['100count']).to eq nil
+      expect(indexer.map_record(record)['f100count']).to eq nil
     end
   end # field_count
+
+  context 'field_ind' do
+    let!(:record) {
+      marcxml_str =
+        '<record xmlns="http://www.loc.gov/MARC21/slim">
+            <leader>01052cam a2200313 i 4500</leader>
+            <controlfield tag="001">field_ind</controlfield>
+            <controlfield tag="008">140604t20152015enk      b    001 0 eng d</controlfield>
+            <datafield ind1="1" ind2="2" tag="100">
+              <subfield code="a">numeric indicators</subfield>
+            </datafield>
+            <datafield ind1=" " ind2="_" tag="700">
+              <subfield code="a">blank and punctuation indicators</subfield>
+            </datafield>
+            <datafield ind1="a" ind2="b" tag="800" >
+              <subfield code="a">alpha indicators</subfield>
+            </datafield>
+          </record>'
+      parse_marc(marcxml_str)
+    }
+    it 'uses first indicator when second param is 1 (string)' do
+      indexer.instance_eval do
+        to_field 'f100ind1', field_ind('100', '1')
+      end
+      expect(indexer.map_record(record)['f100ind1']).to eq ['1']
+    end
+    it 'uses first indicator when second param is 1 (int)' do
+      indexer.instance_eval do
+        to_field 'f100ind1', field_ind('100', 1)
+      end
+      expect(indexer.map_record(record)['f100ind1']).to eq ['1']
+    end
+    it 'uses second indicator when second param is 2 (string)' do
+      indexer.instance_eval do
+        to_field 'f100ind2', field_ind('100', '2')
+      end
+      expect(indexer.map_record(record)['f100ind2']).to eq ['2']
+    end
+    it 'uses second indicator when second param is 2 (int)' do
+      indexer.instance_eval do
+        to_field 'f100ind2', field_ind('100', 2)
+      end
+      expect(indexer.map_record(record)['f100ind2']).to eq ['2']
+    end
+    it 'returns nil (field not in output_hash) when second param is not 1 or 2' do
+      indexer.instance_eval do
+        to_field 'f100ind_3', field_ind('100', '3')
+        to_field 'f100ind_first', field_ind('100', 'first')
+        to_field 'f100ind_a', field_ind('100', 'a')
+      end
+      output_hash = indexer.map_record(record)
+      expect(output_hash['f100ind_3']).to eq nil
+      expect(output_hash['f100ind_first']).to eq nil
+      expect(output_hash['f100ind_a']).to eq nil
+    end
+    it 'single instance of tag returns single char value' do
+      indexer.instance_eval do
+        to_field 'f100ind1', field_ind('100', 1)
+      end
+      expect(indexer.map_record(record)['f100ind1']).to eq ['1']
+    end
+    it 'multiple instances of tag all with same ind value returns unrepeated char value' do
+      marcxml =
+        '<record xmlns="http://www.loc.gov/MARC21/slim">
+            <leader>01052cam a2200313 i 4500</leader>
+            <controlfield tag="001">field_ind</controlfield>
+            <controlfield tag="008">140604t20152015enk      b    001 0 eng d</controlfield>
+            <datafield ind1="1" ind2=" " tag="700">
+              <subfield code="a">numeric indicators</subfield>
+            </datafield>
+            <datafield ind1="1" ind2=" " tag="700">
+              <subfield code="a">blank and punctuation indicators</subfield>
+            </datafield>
+          </record>'
+      indexer.instance_eval do
+        to_field 'f700ind1', field_ind('700', 1)
+      end
+      expect(indexer.map_record(parse_marc(marcxml))['f700ind1']).to eq ['1']
+    end
+    it 'each char used in indicator is a separate value' do
+      marcxml =
+        '<record xmlns="http://www.loc.gov/MARC21/slim">
+            <leader>01052cam a2200313 i 4500</leader>
+            <controlfield tag="001">field_ind</controlfield>
+            <controlfield tag="008">140604t20152015enk      b    001 0 eng d</controlfield>
+            <datafield ind1="1" ind2=" " tag="700">
+              <subfield code="a">numeric indicators</subfield>
+            </datafield>
+            <datafield ind1="2" ind2=" " tag="700">
+              <subfield code="a">blank and punctuation indicators</subfield>
+            </datafield>
+            <datafield ind1="3" ind2=" " tag="700">
+              <subfield code="a">blank and punctuation indicators</subfield>
+            </datafield>
+          </record>'
+      indexer.instance_eval do
+        to_field 'f700ind1', field_ind('700', 1)
+      end
+      expect(indexer.map_record(parse_marc(marcxml))['f700ind1']).to eq ['1', '2', '3']
+    end
+    it 'blank value is honored' do
+      indexer.instance_eval do
+        to_field 'f700ind1', field_ind('700', 1)
+      end
+      expect(indexer.map_record(record)['f700ind1']).to eq [' ']
+    end
+    it 'non-alphanum values are honored' do
+      indexer.instance_eval do
+        to_field 'f700ind2', field_ind('700', 2)
+      end
+      expect(indexer.map_record(record)['f700ind2']).to eq ['_']
+    end
+  end
 
 end
 
