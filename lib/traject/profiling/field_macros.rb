@@ -1,6 +1,7 @@
 module Traject
   class Profiling
 
+    # traject "macros" to be used with #to_field in a traject config file
     module Macros
 
       # to_field 'f100ind1', field_ind('100', '1')
@@ -13,7 +14,7 @@ module Traject
       # @return [lambda] lambda expression appropriate for "to_field", with the number of marc fields
       #   matching the tag param added to in the lambda's accumulator param
       def field_count(tag)
-        return lambda do |record, accumulator, context|
+        return lambda do |record, accumulator, _context|
           num_fields = record.fields(tag).size
           accumulator << num_fields.to_s if num_fields > 0
         end
@@ -21,5 +22,5 @@ module Traject
 
     end # module Macros
 
-  end
-end
+  end # Profiling class
+end # Traject module

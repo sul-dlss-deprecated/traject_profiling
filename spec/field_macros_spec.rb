@@ -9,7 +9,7 @@ RSpec.describe 'field_macros' do
     i
   }
 
-  context "field_count" do
+  context 'field_count' do
     let!(:record) {
       marcxml_str =
         '<record xmlns="http://www.loc.gov/MARC21/slim">
@@ -59,6 +59,6 @@ end
 # @return [MARC::Record] parsed marc_record
 def parse_marc(marcxml_str)
   marc_record = MARC::XMLReader.new(StringIO.new(marcxml_str)).to_a.first
-  fail(MARC::Exception, "unable to parse marc record: " + marcxml_str, caller) if marc_record.nil?
+  fail(MARC::Exception, 'unable to parse marc record: ' + marcxml_str, caller) if marc_record.nil?
   marc_record
 end
