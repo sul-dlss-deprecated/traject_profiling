@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sul-dlss/traject_profiling.svg?branch=master)](https://travis-ci.org/sul-dlss/traject_profiling) [![Coverage Status](https://coveralls.io/repos/sul-dlss/traject_profiling/badge.png)](https://coveralls.io/r/sul-dlss/traject_profiling) [![Dependency Status](https://gemnasium.com/sul-dlss/traject_profiling.svg)](https://gemnasium.com/sul-dlss/traject_profiling) [![Gem Version](https://badge.fury.io/rb/traject_profiling.svg)](http://badge.fury.io/rb/traject_profiling)
+
 # traject_profiling
 
 Traject macros to provide profiling information on MARC bibliographic records.
