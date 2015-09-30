@@ -1,3 +1,6 @@
+require 'coveralls'
+Coveralls.wear!
+
 require 'traject'
 require 'traject/profiling'
 
