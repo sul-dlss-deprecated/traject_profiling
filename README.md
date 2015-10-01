@@ -17,10 +17,10 @@ extend Traject::Profiling::Macros
 
 to_field 'id',          extract_marc('001', :first=>true)
 to_field 'f700count',   field_count('700')
-to_field 'f700ind1',    field_ind_vals('700', '1')
+to_field 'f700ind1',    field_ind_vals('700', '1') # 700 ind1 values
 to_field 'f700ind2',    field_ind_vals('700', '2')
-to_field 'f700subflds', field_subfield_codes('700')
-to_field 'f880_for',    f880_tags
+to_field 'f700codes',   field_codes('700')  # subfield codes used in 700 fields
+to_field 'f880_for',    f880_tags()
 to_field 'f880_for',    f880_tags_and_subfields
 
 ```
