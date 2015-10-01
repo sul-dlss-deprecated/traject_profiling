@@ -18,6 +18,9 @@ Style/EmptyLinesAroundClassBody:
 Style/EmptyLinesAroundModuleBody:
   Enabled: false
 
+Style/SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: no_space
+
 RSpec/DescribeClass:
   Enabled: false
 

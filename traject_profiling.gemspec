@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Naomi Dushay']
   spec.email         = ['ndushay@stanford.edu']
   spec.summary       = 'Traject macros to provide profiling information on MARC bibliographic records.'
-  spec.description   = 'Profiling macros for MARC bib records; meant to be used with traject to index MARC records into Solr.'
+  spec.description   = 'Profiling macros for MARC bib records; meant to be used with traject to index into Solr.'
   spec.homepage      = 'https://github.com/sul-dlss/traject_profiling.git'
   spec.license       = 'Apache-2.0'
 
