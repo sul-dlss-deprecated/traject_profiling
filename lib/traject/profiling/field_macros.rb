@@ -4,8 +4,6 @@ module Traject
     # traject "macros" to be used with #to_field in a traject config file
     module Macros
 
-      # to_field 'f100subflds', profile_subfields('100')
-
       # counts the number of occurrences of a tag in a marc record.
       #   If no occurrences, accumulator is not altered (field should be missing in output_hash)
       # @param [String] tag - marc field tag; three chars (usually but not necessarily numeric)
