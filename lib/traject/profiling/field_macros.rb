@@ -29,8 +29,7 @@ module Traject
       def field_ind(tag, which_ind, dedup=true)
         lambda do |record, accumulator, _context|
           ind_vals = []
-          fields = record.fields(tag)
-          fields.each do |fld|
+          record.each_by_tag(tag) do |fld|
             case which_ind
             when '1', 1
               ind_vals << fld.indicator1.to_s
@@ -57,8 +56,7 @@ module Traject
       def field_codes(tag, dedup=true)
         lambda do |record, accumulator, _context|
           codes = []
-          fields = record.fields(tag)
-          fields.each do |fld|
+          record.each_by_tag(tag) do |fld|
             codes << fld.codes(dedup)
           end
           if dedup
