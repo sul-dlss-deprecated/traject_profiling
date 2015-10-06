@@ -4,11 +4,8 @@ module Traject
     # traject "macros" to be used with #to_field in a traject config file
     module Macros
 
-      # to_field 'f880_for', profile_880_tags
-      # to_field 'f880_for', profile_880_tags_and_subfields
-
-      # TODO: naomi_must_comment_and_test_this_method
-      # what tags are the 880s FOR
+      # Get the tags of fields associated with every 880 field
+      #   If multiple occurrences, there is a single output value for each unique indicator value unless dedup=false
       # @param [Boolean] dedup - set to false if duplicate values should produce duplicate output values
       # counts the number of occurrences of a field in a marc record.
       #   If no occurrences, accumulator is not altered (field should be missing in output_hash)
@@ -49,14 +46,14 @@ module Traject
         end
       end
 
-      # TODO: naomi_must_comment_and_test_this_method
+      # Get the tag of the associated field of an 880 when the |6 linkage occurrence number is 00 or
+      #   when the linkage refers to a field not present in the Marc::Record object.
+      #   e.g.  880 has subfield 6 with value 260-00, so '260' is added to the accumulator.
       # @param [Boolean] dedup - set to false if duplicate values should produce duplicate output values
-      # if linkage data is -00
-      #   (or doesn't refer to an existing field???)
       def tags_for_unassociated_880s(dedup=true)
         lambda do |record, accumulator, _context|
           record.each_by_tag('880') do |field|
-            if field['6'][4, 2] == '00'
+            if field['6'][4, 2] == '00' || record.fields(field['6'][0, 3]).empty?
               accumulator << field['6'][0, 3]
             end
           end

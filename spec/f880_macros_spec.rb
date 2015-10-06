@@ -9,7 +9,7 @@ RSpec.describe 'f880_macros' do
   end # let! indexer
 
   context 'tags_with_880s' do
-    it 'each 880\'s tag' do
+    it 'include tag for each 880' do
       marcxml =
         '<record xmlns="http://www.loc.gov/MARC21/slim">
             <leader>01942cam a2200505Ia 4500</leader>
