@@ -19,7 +19,7 @@ module Traject
       # gets the all the values of an indicator for a tag in a marc record.
       #   If no occurrences of the tag in the marc record, accumulator is not
       #   altered (field should be missing in output_hash).
-      #   If multiple occurrences, there is a single output value for each unique indicator value.
+      #   If multiple occurrences, there is a single output value for each unique indicator value unless dedup=false.
       # @param [String] tag - marc field tag; three chars (usually but not necessarily numeric)
       # @param [Object] which_ind - can be '1' or '2' (Strings) or 1 or 2 (int);
       #   any other value and accumulator is not altered (field should be missing in output_hash)
@@ -48,7 +48,7 @@ module Traject
       # gets the all the subfield codes for a tag in a marc record.
       #   If no occurrences of the tag in the marc record, accumulator is not
       #   altered (field should be missing in output_hash).
-      #   If multiple occurrences, there is a single output value for each unique subfield code.
+      #   If multiple occurrences, there is a single output value for each unique subfield code unless dedup=false.
       # @param [String] tag - marc field tag; three chars (usually but not necessarily numeric)
       # @param [Boolean] dedup - set to false if duplicate values should produce duplicate output values
       # @return [lambda] lambda expression appropriate for "to_field", with the subfield codes
