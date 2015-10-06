@@ -8,7 +8,7 @@ This code is meant to be used with [traject](http://github.com/traject/traject) 
 
 ## Usage
 
-### A sample traject configuration file using macros from traect_profiling
+### A sample traject configuration file using macros from traject_profiling
 
 ```ruby
 require 'traject'
