@@ -25,8 +25,10 @@ module Traject
         end
       end
 
-      # TODO: naomi_must_comment_and_test_this_method
-      # what codes do the 880s for a particular tag have?
+      # gets the all the subfield codes in 880s for a tag in a marc record.
+      #   If no occurrences of the 880 for the tag in the marc record, accumulator is not
+      #   altered (field should be missing in output_hash).
+      #   If multiple occurrences for a code, there is a single output value for each unique subfield code unless dedup=false.
       # @param [Boolean] dedup - set to false if duplicate values should produce duplicate output values
       def tag_codes_in_880s(tag, dedup=true)
         lambda do |record, accumulator, _context|
@@ -34,12 +36,12 @@ module Traject
           record.each_by_tag('880') do |field|
             tag_in_880 = field['6'][0, 3]
             if tag_in_880 == tag
-              # fixme:  remove '6'!
               codes << field.codes(dedup)
+              codes.flatten!
               if dedup
-                accumulator.replace codes.flatten.uniq
+                accumulator.replace codes.uniq - ['6']
               else
-                accumulator.replace codes.flatten
+                accumulator.replace codes - ['6']  # 6 is a non-repeatable code
               end
             end
           end

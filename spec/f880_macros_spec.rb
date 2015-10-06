@@ -273,27 +273,169 @@ RSpec.describe 'f880_macros' do
     end
   end # tags_with_880s
 
+
   context 'tag_codes_in_880s' do
     it 'gets all codes other than 6' do
-      fail 'test to be implemented'
+      marcxml =
+        '<record xmlns="http://www.loc.gov/MARC21/slim">
+            <leader>01942cam a2200505Ia 4500</leader>
+            <controlfield tag="001">f880s</controlfield>
+            <controlfield tag="008">140709s2003    cc            000 1 chird</controlfield>
+            <datafield ind1="1" ind2="0" tag="245">
+              <subfield code="6">880-01</subfield>
+              <subfield code="a">Fen nu de pu tao =</subfield>
+            </datafield>
+            <datafield ind1="1" ind2="0" tag="880">
+              <subfield code="6">245-01</subfield>
+              <subfield code="a">愤怒的葡萄 =</subfield>
+              <subfield code="b">The grapes of wrath /</subfield>
+              <subfield code="c">斯坦培克著 ; 胡仲持译.</subfield>
+            </datafield>
+          </record>'
+      indexer.instance_eval do
+        to_field 'codes_in_880_for_245', tag_codes_in_880s('245')
+      end
+      expect(indexer.map_record(parse_marc(marcxml))['codes_in_880_for_245']).to eq %w(a b c)
     end
-    it 'does not include 6' do
-      fail 'test to be implemented'
+    it 'repeated tags without repeated subfield codes' do
+      marcxml =
+        '<record xmlns="http://www.loc.gov/MARC21/slim">
+            <leader>01052cam a2200313 i 4500</leader>
+            <controlfield tag="001">field_codes</controlfield>
+            <controlfield tag="008">140604t20152015enk      b    001 0 eng d</controlfield>
+            <datafield ind1=" " ind2=" " tag="666">
+              <subfield code="6">880-01</subfield>
+              <subfield code="a">suba</subfield>
+            </datafield>
+            <datafield ind1=" " ind2=" " tag="666">
+              <subfield code="6">880-02</subfield>
+              <subfield code="a">suba</subfield>
+            </datafield>
+            <datafield ind1="1" ind2="0" tag="880">
+              <subfield code="6">666-01</subfield>
+              <subfield code="a">愤怒的葡萄 =</subfield>
+              <subfield code="b">The grapes of wrath /</subfield>
+            </datafield>
+            <datafield ind1="1" ind2="0" tag="880">
+              <subfield code="6">666-02</subfield>
+              <subfield code="c">斯坦培克著 ; 胡仲持译.</subfield>
+              <subfield code="d">斯坦培克著 ; 胡仲持译.</subfield>
+            </datafield>
+          </record>'
+      indexer.instance_eval do
+        to_field 'codes_in_880_for_666', tag_codes_in_880s('666')
+      end
+      expect(indexer.map_record(parse_marc(marcxml))['codes_in_880_for_666']).to eq %w(a b c d)
+    end
+    it 'multiple occurrences of single subfield in single tags' do
+      marcxml =
+        '<record xmlns="http://www.loc.gov/MARC21/slim">
+            <leader>01052cam a2200313 i 4500</leader>
+            <controlfield tag="001">field_codes</controlfield>
+            <controlfield tag="008">140604t20152015enk      b    001 0 eng d</controlfield>
+            <datafield tag="880" ind1="1" ind2=" ">
+              <subfield code="6">490-05/$1</subfield>
+              <subfield code="a">&#x671D;&#x9BAE;&#x3000;&#x6642;&#x4EE3;&#x3000;&#x79C1;&#x64B0;&#x3000;&#x9091;&#x8A8C;&#x3000;&#xFF1B;</subfield>
+              <subfield code="v">12.</subfield>
+              <subfield code="a">&#x4EAC;&#x757F;&#x9053; ;</subfield>
+              <subfield code="v">12</subfield>
+            </datafield>
+          </record>'
+      indexer.instance_eval do
+        to_field 'codes_in_880_for_490', tag_codes_in_880s('490')
+      end
+      expect(indexer.map_record(parse_marc(marcxml))['codes_in_880_for_490']).to eq %w(a v)
+    end
+    it 'multiple occurrences of subfields in multiple tags' do
+      marcxml =
+        '<record xmlns="http://www.loc.gov/MARC21/slim">
+            <leader>01052cam a2200313 i 4500</leader>
+            <controlfield tag="001">field_codes</controlfield>
+            <controlfield tag="008">140604t20152015enk      b    001 0 eng d</controlfield>
+            <datafield ind1=" " ind2=" " tag="666">
+              <subfield code="6">880-01</subfield>
+              <subfield code="a">suba</subfield>
+            </datafield>
+            <datafield ind1=" " ind2=" " tag="666">
+              <subfield code="6">880-02</subfield>
+              <subfield code="a">suba</subfield>
+            </datafield>
+            <datafield ind1="1" ind2="0" tag="880">
+              <subfield code="6">666-01</subfield>
+              <subfield code="a">愤怒的葡萄 =</subfield>
+              <subfield code="b">The grapes of wrath /</subfield>
+            </datafield>
+            <datafield ind1="1" ind2="0" tag="880">
+              <subfield code="6">666-02</subfield>
+              <subfield code="a">斯坦培克著 ; 胡仲持译.</subfield>
+              <subfield code="b">斯坦培克著 ; 胡仲持译.</subfield>
+            </datafield>
+          </record>'
+      indexer.instance_eval do
+        to_field 'codes_in_880_for_666', tag_codes_in_880s('666')
+      end
+      expect(indexer.map_record(parse_marc(marcxml))['codes_in_880_for_666']).to eq %w(a b)
     end
     it 'gets numeric codes' do
-      fail 'test to be implemented'
+      marcxml =
+        '<record xmlns="http://www.loc.gov/MARC21/slim">
+            <leader>01942cam a2200505Ia 4500</leader>
+            <controlfield tag="001">f880s</controlfield>
+            <controlfield tag="008">140709s2003    cc            000 1 chird</controlfield>
+            <datafield ind1="1" ind2="0" tag="245">
+              <subfield code="6">880-01</subfield>
+              <subfield code="a">Fen nu de pu tao =</subfield>
+            </datafield>
+            <datafield ind1="1" ind2="0" tag="880">
+              <subfield code="6">245-01</subfield>
+              <subfield code="0">(OCoLC)fst01140873</subfield>
+              <subfield code="a">愤怒的葡萄 =</subfield>
+            </datafield>
+          </record>'
+      indexer.instance_eval do
+        to_field 'codes_in_880_for_245', tag_codes_in_880s('245')
+      end
+      expect(indexer.map_record(parse_marc(marcxml))['codes_in_880_for_245']).to include('0')
     end
     it 'gets non-alphanum codes' do
-      fail 'test to be implemented'
-    end
-    it 'multiple 880s for same tag' do
-      fail 'test to be implemented'
-    end
-    it 'multiple occurrences of same code in separate 880s for same tag' do
-      fail 'test to be implemented'
+      marcxml =
+        '<record xmlns="http://www.loc.gov/MARC21/slim">
+            <leader>01942cam a2200505Ia 4500</leader>
+            <controlfield tag="001">f880s</controlfield>
+            <controlfield tag="008">140709s2003    cc            000 1 chird</controlfield>
+            <datafield ind1="1" ind2="0" tag="245">
+              <subfield code="6">880-01</subfield>
+              <subfield code="a">Fen nu de pu tao =</subfield>
+            </datafield>
+            <datafield ind1="1" ind2="0" tag="880">
+              <subfield code="6">245-01</subfield>
+              <subfield code="a">愤怒的葡萄 =</subfield>
+              <subfield code="=">^A885612</subfield>
+            </datafield>
+          </record>'
+      indexer.instance_eval do
+        to_field 'codes_in_880_for_245', tag_codes_in_880s('245')
+      end
+      expect(indexer.map_record(parse_marc(marcxml))['codes_in_880_for_245']).to include('=')
     end
     it 'dedup=false' do
-      fail 'test to be implemented'
+      marcxml =
+        '<record xmlns="http://www.loc.gov/MARC21/slim">
+            <leader>01052cam a2200313 i 4500</leader>
+            <controlfield tag="001">field_codes</controlfield>
+            <controlfield tag="008">140604t20152015enk      b    001 0 eng d</controlfield>
+            <datafield tag="880" ind1="1" ind2=" ">
+              <subfield code="6">490-05/$1</subfield>
+              <subfield code="a">&#x671D;&#x9BAE;&#x3000;&#x6642;&#x4EE3;&#x3000;&#x79C1;&#x64B0;&#x3000;&#x9091;&#x8A8C;&#x3000;&#xFF1B;</subfield>
+              <subfield code="v">12.</subfield>
+              <subfield code="a">&#x4EAC;&#x757F;&#x9053; ;</subfield>
+              <subfield code="v">12</subfield>
+            </datafield>
+          </record>'
+      indexer.instance_eval do
+        to_field 'codes_in_880_for_490', tag_codes_in_880s('490', false)
+      end
+      expect(indexer.map_record(parse_marc(marcxml))['codes_in_880_for_490']).to eq %w(a v a v)
     end
     it 'no 880s: field not in output_hash' do
       marcxml =
