@@ -8,7 +8,7 @@ This code is meant to be used with [traject](http://github.com/traject/traject) 
 
 ## Usage
 
-### A sample traject configuration file using macros from traect_profiling
+### A sample traject configuration file using macros from traject_profiling
 
 ```ruby
 require 'traject'
@@ -20,8 +20,9 @@ to_field 'f700count',   field_count('700')
 to_field 'f700ind1',    field_ind_vals('700', '1') # 700 ind1 values
 to_field 'f700ind2',    field_ind_vals('700', '2')
 to_field 'f700codes',   field_codes('700')  # subfield codes used in 700 fields
-to_field 'f880_for',    f880_tags()
-to_field 'f880_for',    f880_tags_and_subfields
+to_field 'f880_for',    tags_with_880s()
+to_field 'f880codes_for_700',    tag_codes_in_880s('700')
+to_field 'orphan_880s', tags_for_unassociated_880s
 
 ```
 

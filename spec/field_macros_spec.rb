@@ -1,4 +1,3 @@
-
 RSpec.describe 'field_macros' do
 
   let!(:indexer) do
@@ -384,13 +383,4 @@ RSpec.describe 'field_macros' do
     end # dedup=false
   end # field_codes
 
-end
-
-# @param [String] marcxml_str an xml representation of a MARC record
-# @raise [Marc::Exception] if nil returned from MARC::XMLReader
-# @return [MARC::Record] parsed marc_record
-def parse_marc(marcxml_str)
-  marc_record = MARC::XMLReader.new(StringIO.new(marcxml_str)).to_a.first
-  fail(MARC::Exception, 'unable to parse marc record: ' + marcxml_str, caller) if marc_record.nil?
-  marc_record
 end

@@ -4,8 +4,6 @@ module Traject
     # traject "macros" to be used with #to_field in a traject config file
     module Macros
 
-      # to_field 'f100subflds', profile_subfields('100')
-
       # counts the number of occurrences of a tag in a marc record.
       #   If no occurrences, accumulator is not altered (field should be missing in output_hash)
       # @param [String] tag - marc field tag; three chars (usually but not necessarily numeric)
@@ -21,7 +19,7 @@ module Traject
       # gets the all the values of an indicator for a tag in a marc record.
       #   If no occurrences of the tag in the marc record, accumulator is not
       #   altered (field should be missing in output_hash).
-      #   If multiple occurrences, there is a single output value for each unique indicator value.
+      #   If multiple occurrences, there is a single output value for each unique indicator value unless dedup=false.
       # @param [String] tag - marc field tag; three chars (usually but not necessarily numeric)
       # @param [Object] which_ind - can be '1' or '2' (Strings) or 1 or 2 (int);
       #   any other value and accumulator is not altered (field should be missing in output_hash)
@@ -31,8 +29,7 @@ module Traject
       def field_ind(tag, which_ind, dedup=true)
         lambda do |record, accumulator, _context|
           ind_vals = []
-          fields = record.fields(tag)
-          fields.each do |fld|
+          record.each_by_tag(tag) do |fld|
             case which_ind
             when '1', 1
               ind_vals << fld.indicator1.to_s
@@ -51,7 +48,7 @@ module Traject
       # gets the all the subfield codes for a tag in a marc record.
       #   If no occurrences of the tag in the marc record, accumulator is not
       #   altered (field should be missing in output_hash).
-      #   If multiple occurrences, there is a single output value for each unique subfield code.
+      #   If multiple occurrences, there is a single output value for each unique subfield code unless dedup=false.
       # @param [String] tag - marc field tag; three chars (usually but not necessarily numeric)
       # @param [Boolean] dedup - set to false if duplicate values should produce duplicate output values
       # @return [lambda] lambda expression appropriate for "to_field", with the subfield codes
@@ -59,8 +56,7 @@ module Traject
       def field_codes(tag, dedup=true)
         lambda do |record, accumulator, _context|
           codes = []
-          fields = record.fields(tag)
-          fields.each do |fld|
+          record.each_by_tag(tag) do |fld|
             codes << fld.codes(dedup)
           end
           if dedup
