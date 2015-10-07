@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 RSpec.describe 'f880_macros' do
 
   let!(:indexer) do
